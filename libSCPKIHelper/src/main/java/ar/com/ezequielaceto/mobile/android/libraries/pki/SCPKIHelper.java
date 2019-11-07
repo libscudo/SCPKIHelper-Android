@@ -14,6 +14,7 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.Certificate;
@@ -90,6 +91,28 @@ public final class SCPKIHelper {
             throw new KeyStoreException(e);
         }
         throw new KeyNotFoundForIdentifier();
+    }
+
+    public PrivateKey getPrivateKey(SCPKIKeySpec specs, String identifier) throws KeyStoreException, AlgorithmException, KeyNotFoundForIdentifier {
+        try {
+            KeyStore keyStore = KeyStore.getInstance(specs.getProvider());
+            keyStore.load(null);
+
+            KeyStore.Entry entry = keyStore.getEntry(aliasFor(identifier), null);
+            if (!(entry instanceof KeyStore.PrivateKeyEntry)) {
+                throw new KeyNotFoundForIdentifier();
+            }
+            KeyStore.PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) entry;
+            return privateKeyEntry.getPrivateKey();
+
+        } catch (CertificateException | IOException | NoSuchAlgorithmException | java.security.KeyStoreException e) {
+            if (e instanceof NoSuchAlgorithmException) {
+                throw new AlgorithmException(e);
+            }
+            throw new KeyStoreException(e);
+        } catch (UnrecoverableEntryException e) {
+            throw new KeyNotFoundForIdentifier();
+        }
     }
 
     @NotNull
