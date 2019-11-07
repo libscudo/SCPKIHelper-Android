@@ -10,6 +10,12 @@ import java.security.KeyPairGenerator;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.PublicKey;
+
+import static android.security.keystore.KeyProperties.PURPOSE_ENCRYPT;
+import static android.security.keystore.KeyProperties.PURPOSE_DECRYPT;
+import static android.security.keystore.KeyProperties.PURPOSE_VERIFY;
+import static android.security.keystore.KeyProperties.PURPOSE_SIGN;
 
 public final class SCPKIHelper {
 
@@ -34,9 +40,10 @@ public final class SCPKIHelper {
             KeyPairGenerator kpg = KeyPairGenerator.getInstance(specs.getKeyType(), specs.getProvider());
             kpg.initialize(new KeyGenParameterSpec.Builder(
                     serviceName + "." + identifier,
-                    KeyProperties.PURPOSE_SIGN | KeyProperties.PURPOSE_VERIFY)
+                    PURPOSE_SIGN | PURPOSE_VERIFY | PURPOSE_DECRYPT | PURPOSE_ENCRYPT)
                     .setDigests(specs.getDigest(), specs.getDigest())
-                    .setEncryptionPaddings(specs.getPadding(), specs.getPadding())
+                    .setEncryptionPaddings(specs.getEncryptionPadding(), specs.getEncryptionPadding())
+                    .setSignaturePaddings(specs.getSignaturePadding(), specs.getSignaturePadding())
                     .setUserAuthenticationRequired(specs.requireUserAuthentication())
                     .setUserAuthenticationValidityDurationSeconds(specs.getReuseAuthenticationDuration())
                     .build());
@@ -55,6 +62,10 @@ public final class SCPKIHelper {
         } catch (Exception e) {
             throw e;
         }
+    }
+
+    public PublicKey getPublicKey(SCPKIKeySpec specs, String identifier) {
+        return null;
     }
 
 
