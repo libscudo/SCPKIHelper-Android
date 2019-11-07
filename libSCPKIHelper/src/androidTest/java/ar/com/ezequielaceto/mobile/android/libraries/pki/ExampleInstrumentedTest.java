@@ -19,7 +19,7 @@ import static org.junit.Assert.*;
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest {
     @Test
-    public void generateKeyPair() {
+    public void generateKeyPairOk() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
@@ -29,8 +29,26 @@ public class ExampleInstrumentedTest {
 
             KeyPair keyPair = SCPKIHelper.shared(appContext).generateKeyPair(specs, "test_keys");
             assertTrue(keyPair != null && keyPair.getPrivate() != null && keyPair.getPublic() != null);
+            return;
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        assertTrue(false);
+    }
+
+    @Test
+    public void generateKeyPairFailWithNoAuth() {
+        // Context of the app under test.
+        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+
+        try {
+            SCPKIKeySpec specs  = SCPKIKeySpec.common;
+            specs.setRequireUserAuthentication(true);
+
+            SCPKIHelper.shared(appContext).generateKeyPair(specs, "test_keys");
+        } catch (Exception e) {
+            assertTrue(e instanceof SCPKIHelper.AuthenticationRequiredException);
+            return;
         }
         assertTrue(false);
     }
