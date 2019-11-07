@@ -25,7 +25,7 @@ public class ExampleInstrumentedTest {
 
         try {
             SCPKIKeySpec specs  = SCPKIKeySpec.common;
-            specs.setRequireUserAuthentication(false);
+            specs.setRequireUserAuthentication(true);
 
             KeyPair keyPair = SCPKIHelper.shared(appContext).generateKeyPair(specs, "test_keys");
             assertTrue(keyPair != null && keyPair.getPrivate() != null && keyPair.getPublic() != null);
