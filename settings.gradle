@@ -1,0 +1,2 @@
+include ':libSCPKIHelper'
+rootProject.name='SCPKIHelper'
