@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.security.KeyPair;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 
 import static org.junit.Assert.*;
@@ -64,6 +65,23 @@ public class ExampleInstrumentedTest {
 
             PublicKey publicKey = SCPKIHelper.shared(appContext).getPublicKey(specs, "test_keys");
             assertTrue(publicKey != null);
+            return;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertTrue(false);
+    }
+
+    @Test
+    public void getPrivateKey() {
+        Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+
+        try {
+            SCPKIKeySpec specs  = SCPKIKeySpec.common;
+            specs.setRequireUserAuthentication(false);
+
+            PrivateKey privateKey = SCPKIHelper.shared(appContext).getPrivateKey(specs, "test_keys");
+            assertTrue(privateKey != null);
             return;
         } catch (Exception e) {
             e.printStackTrace();
