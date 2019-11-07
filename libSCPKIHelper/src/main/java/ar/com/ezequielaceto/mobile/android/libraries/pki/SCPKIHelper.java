@@ -53,6 +53,7 @@ public final class SCPKIHelper {
                     aliasFor(identifier),
                     PURPOSE_SIGN | PURPOSE_VERIFY | PURPOSE_DECRYPT | PURPOSE_ENCRYPT)
                     .setDigests(specs.getDigest(), specs.getDigest())
+                    .setKeySize(specs.getSizeInBits())
                     .setEncryptionPaddings(specs.getEncryptionPadding(), specs.getEncryptionPadding())
                     .setSignaturePaddings(specs.getSignaturePadding(), specs.getSignaturePadding())
                     .setUserAuthenticationRequired(specs.requireUserAuthentication())
