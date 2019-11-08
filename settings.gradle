@@ -1,2 +1,2 @@
-include ':libSCPKIHelper', ':TestApp'
+include ':libSCPKIHelper'
 rootProject.name='SCPKIHelper'
