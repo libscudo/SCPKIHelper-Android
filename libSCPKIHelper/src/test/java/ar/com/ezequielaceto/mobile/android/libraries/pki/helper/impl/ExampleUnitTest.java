@@ -1,4 +1,4 @@
-package ar.com.ezequielaceto.mobile.android.libraries.pki.testapp;
+package ar.com.ezequielaceto.mobile.android.libraries.pki.helper.impl;
 
 import org.junit.Test;
 
