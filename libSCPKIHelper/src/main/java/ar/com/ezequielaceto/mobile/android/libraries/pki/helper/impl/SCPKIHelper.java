@@ -1,17 +1,17 @@
-package ar.com.ezequielaceto.mobile.android.libraries.pki;
+package ar.com.ezequielaceto.mobile.android.libraries.pki.helper.impl;
 
 import android.content.Context;
 import android.security.keystore.KeyGenParameterSpec;
-import android.security.keystore.KeyProperties;
+import android.util.Base64;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
@@ -19,9 +19,8 @@ import java.security.PublicKey;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
-import java.util.Enumeration;
-
-import javax.crypto.SecretKey;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 
 import static android.security.keystore.KeyProperties.PURPOSE_ENCRYPT;
 import static android.security.keystore.KeyProperties.PURPOSE_DECRYPT;
@@ -113,6 +112,38 @@ public final class SCPKIHelper {
             throw new KeyStoreException(e);
         } catch (UnrecoverableEntryException e) {
             throw new KeyNotFoundForIdentifier();
+        }
+    }
+
+    public Certificate getCertificate(SCPKIKeySpec specs, String identifier) throws KeyStoreException {
+        try {
+            KeyStore keyStore = KeyStore.getInstance(specs.getProvider());
+            keyStore.load(null);
+
+            Certificate certificate = keyStore.getCertificate(aliasFor(identifier));
+            return certificate;
+        } catch (CertificateException | IOException | NoSuchAlgorithmException | java.security.KeyStoreException e) {
+            throw new KeyStoreException(e);
+        }
+    }
+
+    public Certificate importCertificate(SCPKIKeySpec specs, String identifier, String pem) throws KeyStoreException {
+        try {
+            CertificateFactory factory = CertificateFactory.getInstance("X.509");
+
+            KeyStore keyStore = KeyStore.getInstance(specs.getProvider());
+            keyStore.load(null);
+
+
+            String der = pem.replace("-----BEGIN CERTIFICATE-----", "").replace("-----END CERTIFICATE-----", "");
+            final byte[] bytes = Base64.decode(der, Base64.DEFAULT);
+            X509Certificate certificate = (X509Certificate)factory.generateCertificate(new ByteArrayInputStream(bytes));
+
+            keyStore.setCertificateEntry(aliasFor(identifier), certificate);
+
+            return certificate;
+        } catch (CertificateException | IOException | NoSuchAlgorithmException | java.security.KeyStoreException e) {
+            throw new KeyStoreException(e);
         }
     }
 

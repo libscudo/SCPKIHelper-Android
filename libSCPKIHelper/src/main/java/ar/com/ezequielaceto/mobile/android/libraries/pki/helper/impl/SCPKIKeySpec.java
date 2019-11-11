@@ -1,11 +1,7 @@
-package ar.com.ezequielaceto.mobile.android.libraries.pki;
+package ar.com.ezequielaceto.mobile.android.libraries.pki.helper.impl;
 
-import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 
 public class SCPKIKeySpec {
